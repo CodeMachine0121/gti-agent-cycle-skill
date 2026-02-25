@@ -8,6 +8,8 @@ A Claude Code plugin that enforces a closed-loop BDD→TDD development workflow.
 /gti → gti-spec → gti-test → [human review] → gti-impl → gti-test-driven-development ⟺ gti-verify
 ```
 
+Run `/gti` in Claude Code to start the full workflow.
+
 ## Skills
 
 | Skill | Role | Invokes |
