@@ -2,7 +2,7 @@
   "name": "gti",
   "description": "Closed-loop BDD→TDD workflow. Converts requirements into Gherkin specs, generates test shells for review, then implements with strict RED→GREEN→REFACTOR discipline.",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "james.hsueh",
+    "email": "asdfg55887@gmail.com"
   }
 }
