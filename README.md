@@ -1,4 +1,6 @@
-# gti
+# gti-agent-cycle-skill
+
+**GTI** = Gherkin → Test → Implementation
 
 A Claude Code plugin that enforces a closed-loop BDD→TDD development workflow — from natural language requirement to verified, passing tests.
 
