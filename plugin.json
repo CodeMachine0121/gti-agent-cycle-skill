@@ -1,0 +1,12 @@
+{
+  "name": "gti",
+  "description": "A agent plugin that enforces a closed-loop BDD→TDD development workflow — from natural language requirement to verified, passing tests.",
+  "version": "1.0.0",
+  "author": {
+    "name": "James Hsueh",
+    "email": "asdfg55887@gmail.com"
+  },
+  "keywords": ["sdd", "bdd", "sdd", "cycle"],
+  "agents": "agents/",
+  "skills": ["skills/", "extra-skills/"],
+}
