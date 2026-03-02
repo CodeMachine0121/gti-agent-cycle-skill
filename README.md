@@ -23,8 +23,7 @@ You describe a feature. `gti` guides you through the entire development cycle:
 Install directly from GitHub in Claude Code:
 
 ```
-/plugin install github:CodeMachine0121/gti-agent-cycle-skill
-```
+/plugin install https://github.com/CodeMachine0121/gti-agent-cycle-skill.git```
 
 ## Usage
 
