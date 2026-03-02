@@ -11,11 +11,11 @@ You describe a feature. `gti` guides you through the entire development cycle:
 1. **Explore requirements** — Claude brainstorms edge cases and failure paths with you, ensuring nothing is missed before a single line of code is written
 2. **Write Gherkin spec** — requirements become a `.feature` file in business language
 3. **Generate test shells** — empty test cases mapped from each scenario, **you review and confirm before implementation starts**
-4. **TDD implementation** — strict RED→GREEN→REFACTOR cycle until all tests pass
+4. **Fill assertions + implement** — all test assertions are written first (every test RED), then source code is written to make them all GREEN — no test case is ever skipped
 5. **Verify** — automated test execution closes the loop
 
 ```
-/gti → gti-spec → gti-test → [human review] → gti-impl → gti-test-driven-development ⟺ gti-verify
+/gti → gti-spec → gti-test → [human review] → gti-impl ⟺ gti-verify
 ```
 
 ## Installation
@@ -41,8 +41,7 @@ Claude will ask for your feature requirement and walk through the full workflow 
 |---|---|---|
 | `gti-spec` | Brainstorm requirements → write Gherkin | `gti-test` |
 | `gti-test` | Generate empty test shells (human confirmation required) | `gti-impl` |
-| `gti-impl` | Gather context, coordinate TDD | `gti-test-driven-development` |
-| `gti-test-driven-development` | Enforce RED→GREEN→REFACTOR cycle | `gti-verify` |
+| `gti-impl` | Fill all assertions → implement source code | `gti-verify` |
 | `gti-verify` | Run tests, report pass/fail | — |
 
 ## Testing Principles

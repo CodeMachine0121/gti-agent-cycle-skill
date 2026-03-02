@@ -89,21 +89,49 @@ func TestUserLogin_LoginFailsWithWrongPassword(t *testing.T) {
 
 ### Step 3: Write the test file
 
-Write the test shells to the appropriate location for the detected framework:
+Use the language-appropriate naming convention and placement. Follow the project's existing structure if test files already exist — match their pattern.
 
-| Framework | Location |
-|---|---|
-| Jest/Vitest | `src/__tests__/<name>.test.ts` or beside source |
-| JUnit | `src/test/java/<package>/<Name>Test.java` |
-| Go | `<package>/<name>_test.go` |
-| pytest | `tests/test_<name>.py` |
+**TypeScript / JavaScript (Vitest or Jest)**
+- Name: `<source-file-name>.test.ts` or `<source-file-name>.spec.ts`
+- Vitest (preferred): place beside the source file — `src/feature/login.test.ts`
+- Jest: place beside source or in `src/__tests__/login.test.ts`
+- Use `kebab-case` filenames matching the source file name
+- Group with `describe` for Feature, `it` for Scenario
+
+**Go**
+- Name: `<source-file>_test.go` — always beside the source file in the same directory
+- Black-box (integration-style): `package <name>_test` — preferred when testing public API
+- White-box (access to unexported symbols): `package <name>`
+- Function names: `Test<FeatureName>_<ScenarioName>` in PascalCase
+
+**Python (pytest)**
+- Name: `test_<module>.py`
+- Place in `tests/` directory mirroring source structure: `tests/unit/test_login.py`
+- Function prefix: `test_`, class prefix: `Test` (no suffix needed)
+- Use `class Test<Feature>:` to group related scenarios
+
+**Java (JUnit 5)**
+- Name: `<ClassName>Test.java`
+- Mirror source structure under `src/test/java/`: `src/test/java/com/example/LoginTest.java`
+- Use exact same package as the source class
+- Use `@Nested` classes to group scenarios by Feature
+
+**Rust**
+- Unit tests (testing internal module behavior): inline in source file using `#[cfg(test)]` module at the bottom
+- Integration tests (testing public API): `tests/<name>.rs`
+- Function prefix: `test_` with `#[test]` attribute
+
+**Ruby (RSpec)**
+- Name: `<name>_spec.rb`
+- Mirror source structure under `spec/`: `spec/services/login_spec.rb`
+- Use `describe` for the class/module, `context` for scenarios
 
 ### Step 4: HARD STOP — Human confirmation required
 
 Present the generated test file to the user and say:
 
 "Test shells written to `<path>`. Please review:
-- Are all scenarios represented?
+- Are all scenarios represented? (Gherkin: N scenarios, Test shells: N shells)
 - Are any scenarios missing or should be split?
 - Do the test names clearly describe the expected behavior?
 
