@@ -10,12 +10,11 @@
       "name": "gti",
       "description": "A Claude Code plugin that enforces a closed-loop BDD→TDD development workflow — from natural language requirement to verified, passing tests — with full documentation output at every stage.",
       "version": "1.0.1",
+      "source": "https://github.com/CodeMachine0121/gti-agent-cycle-skill.git",
       "author": {
         "name": "James Hsueh",
         "email": "asdfg55887@gmail.com"
-      },
-      "keywords": ["bdd", "tdd", "sdd", "gherkin", "cycle", "workflow", "testing"],
-      "source": "https://github.com/CodeMachine0121/gti-agent-cycle-skill.git"
+      }
     }
   ]
 }
