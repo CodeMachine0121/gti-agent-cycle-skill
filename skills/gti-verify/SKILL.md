@@ -1,26 +1,19 @@
 ---
 name: gti-verify
-description: "Phase 4 of the gti workflow. Runs the project's test suite and reports results. Called by gti-test-driven-development after each GREEN and REFACTOR phase."
+description: "Phase 4 of the gti workflow. Final verification gate — runs full test suite, verifies all tests are implemented and green, cross-checks coverage against feature scenarios, and generates a conclusion document."
 ---
 
-# gti-verify: Test Execution Gate
+# gti-verify: Final Verification Gate
 
 ## Role
 
-You are a QA Gate. You run tests and report results truthfully. You do not interpret or fix failures — you report them and hand back to the caller.
+You are a Final QA Verifier. Your job is to run the complete test suite, verify all tests are green and fully implemented (not empty shells), cross-check unit test coverage against the feature file scenarios, and produce a conclusion document.
 
 ## Process
 
-### Step 1: Determine scope
+### Step 1: Detect test command
 
-You will be called with one of two scopes:
-
-- **Single test:** Run only the specified test (passed by gti-test-driven-development during GREEN phase)
-- **Full suite:** Run all tests (called after REFACTOR or at workflow completion)
-
-### Step 2: Run the tests
-
-Use the test command detected during `gti-test`. If not available in context, re-detect:
+Detect the test framework and command from project files:
 
 | Project file | Command |
 |---|---|
@@ -32,26 +25,65 @@ Use the test command detected during `gti-test`. If not available in context, re
 | `pyproject.toml` / `pytest.ini` | `pytest` |
 | `Cargo.toml` | `cargo test` |
 
-For single test scope, append the test filter flag appropriate for the framework.
+### Step 2: Verify all tests pass
 
-### Step 3: Report results
+Run the full test suite. If any test fails:
+- List each failing test with name, file, line, actual vs expected
+- Report: "Verification failed. Return to implementation to fix failures."
+- Do NOT proceed to Step 3.
 
-**All tests pass:**
+### Step 3: Verify tests are implemented (not empty shells)
 
+Scan each test file for the feature. Check that no test function contains only `// TODO` or is otherwise empty/unimplemented.
+- If empty shells are found, list them and report: "The following tests have no assertions — implementation is incomplete."
+- Do NOT proceed to Step 4 until resolved.
+
+### Step 4: Cross-check test coverage against feature file
+
+Read `docs/<feature_name>/<feature_name>.feature` and count all `Scenario:` blocks.
+Read the test file(s) for this feature and count test functions.
+
+For each scenario in the feature file, verify there is a corresponding test that:
+- Has a meaningful name matching the scenario
+- Has actual assertions
+
+Report:
 ```
-✓ All tests passing ([N] tests)
+Coverage analysis:
+  Feature scenarios: N
+  Test cases with assertions: M
+
+Mapped:
+  ✓ [scenario] → [test name]
+  ...
+
+Missing coverage (if any):
+  ✗ [scenario] — no corresponding test found
 ```
 
-If called from the final verification step, announce:
-"Workflow complete. All tests green."
+If any scenarios are unmapped, report as incomplete and do not proceed.
 
-**Failures detected:**
+### Step 5: Generate conclusion document
 
-List each failing test with:
-- Test name
-- File and line number
-- Actual vs expected output (from test runner output)
+If all checks pass, create `docs/<feature_name>/conclusion.md` with this structure:
 
-Then return to `gti-test-driven-development` with this failure report.
+```markdown
+# Conclusion: <feature_name>
 
-Do NOT suggest fixes. Do NOT modify code. Report only.
+## 實作摘要
+[Brief description of what was implemented]
+
+## 測試涵蓋情境
+[List each feature scenario and its corresponding test case]
+
+## 驗證結果
+- Total tests: N
+- All passing: ✓
+- Coverage: All N scenarios covered
+- Implementation: Complete (no empty shells)
+
+## 完成時間
+[Current date]
+```
+
+Announce: "Verification complete. Conclusion written to `docs/<feature_name>/conclusion.md`."

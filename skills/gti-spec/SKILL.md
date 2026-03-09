@@ -1,15 +1,31 @@
 ---
 name: gti-spec
-description: "Phase 1 of the gti workflow. Use when starting a new feature from a user requirement. Explores and completes the requirement through brainstorming, then converts it into a Gherkin .feature file."
+description: "Phase 1 of the gti workflow. Use when starting a new feature from a user requirement. Sets up an isolated git worktree, explores and completes the requirement through brainstorming, converts it into a Gherkin .feature file and a spec.md document, then hands off to gti-test after explicit user approval."
 ---
 
 # gti-spec: Requirement → Gherkin Spec
 
 ## Role
 
-You are a Business Analyst. Your job is first to make the requirement as complete as possible through collaborative exploration, then to translate it into a precise Gherkin feature file that captures business behavior — not implementation.
+You are a Business Analyst. Your job is first to set up an isolated development environment, then make the requirement as complete as possible through collaborative exploration, then to translate it into a precise Gherkin feature file and a spec document that captures business behavior — not implementation.
 
 ## Process
+
+### Step 0: Git worktree setup
+
+Ask the user for the feature name if it has not already been provided. The feature name should be expressed as a short, descriptive phrase; you will convert it to kebab-case for use as the branch name and directory name.
+
+Once you have the feature name:
+
+1. Derive `<feature-name>` as the kebab-case version (e.g. "user login" → `user-login`).
+2. Run the following command using raw git (do not invoke any external skill):
+   ```
+   git worktree add ../worktrees/<feature-name> -b <feature-name>
+   ```
+3. Announce the worktree location to the user:
+   "Worktree created at `../worktrees/<feature-name>` on branch `<feature-name>`. All development will happen in that directory."
+
+Do not proceed until the worktree has been created successfully.
 
 ### Step 1: Understand the happy path
 
@@ -66,13 +82,15 @@ Then ask: "Are there any scenarios I missed? Any you'd like to remove or change?
 
 Incorporate user feedback. Repeat Step 2's confirmation if significant new scenarios were added.
 
-When the user confirms the list is complete, proceed to write the Gherkin.
+When the user confirms the list is complete, proceed to write the files.
 
-### Step 4: Write the `.feature` file
+### Step 4: Write the spec files
 
-Create a file at `features/<feature-name>.feature`.
+Create the directory `docs/<feature_name>/` inside the worktree if it does not already exist (using `<feature_name>` as the kebab-case feature name). Write two files into that directory:
 
-Rules for writing Gherkin:
+**File 1: `docs/<feature_name>/<feature_name>.feature`**
+
+The Gherkin feature file. Rules for writing Gherkin:
 - `Given` sets up context (what is already true)
 - `When` describes the action the actor takes
 - `Then` describes the observable outcome (behavior, not state)
@@ -96,17 +114,45 @@ Feature: User login
     And the user remains on the login page
 ```
 
+**File 2: `docs/<feature_name>/spec.md`**
+
+A spec document with the following structure:
+
+```
+# Feature: <name>
+
+## 需求摘要
+[concise summary of what this feature does and why]
+
+## Happy Cases
+- [plain language description of each happy path scenario from the feature file]
+```
+
 ### Step 5: Review
 
-Read the written `.feature` file and verify:
+Read both written files and verify:
 - [ ] Every scenario has a single, clear business outcome in `Then`
 - [ ] No implementation details leaked into steps
 - [ ] All confirmed scenarios from Step 3 are represented
 - [ ] No Runtime Exception scenarios slipped in
+- [ ] The `spec.md` 需求摘要 accurately summarizes the feature intent
+- [ ] The `spec.md` Happy Cases list matches the happy path scenarios in the feature file
 
-### Step 6: Hand off
+### Step 6: Human confirmation
 
-Announce: "Gherkin spec written to `features/<name>.feature`. Moving to test generation."
+Present both files to the user, then ask:
+
+"Spec written to `docs/<feature_name>/`. Please review:
+- Does the spec.md accurately capture the requirements?
+- Does the feature file cover all needed scenarios?
+- Are the happy cases correct?
+
+Reply 'ok' or 'approved' to continue, or provide feedback."
+
+Wait for an explicit 'ok' or 'approved' reply before proceeding. If the user provides feedback, incorporate it, update both files, and repeat Step 5 and Step 6.
+
+### Step 7: Hand off
+
+After the user confirms, announce: "Spec confirmed. Moving to test generation."
 
 Then invoke the `gti-test` skill.
-

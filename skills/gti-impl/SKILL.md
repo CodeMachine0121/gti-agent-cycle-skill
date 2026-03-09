@@ -1,6 +1,6 @@
 ---
 name: gti-impl
-description: "Phase 3 of the gti workflow. Reads Gherkin spec and confirmed test shells, fills in ALL test assertions, then implements source code to make every test pass. No test case is skipped."
+description: "Phase 3 of the gti workflow. Reads Gherkin spec and confirmed test shells, follows project conventions (CLAUDE.md, AGENT.md, etc.), fills in ALL test assertions, then implements source code to make every test pass. No test case is skipped."
 ---
 
 # gti-impl: Implementation Phase
@@ -25,9 +25,16 @@ Write assertions for predictable failure paths callers must handle: invalid user
 ### Step 1: Gather context
 
 Read:
-1. The `.feature` file in `features/`
+1. The `.feature` file at `docs/<feature_name>/<feature_name>.feature`
 2. The test file written by `gti-test`
 3. Any existing source files relevant to the feature (related modules, services, handlers, interfaces)
+
+Then read project convention files if they exist:
+4. `CLAUDE.md` — if present at the project root
+5. `AGENT.md` — if present at the project root
+6. Any files named `*.md` in directories like `docs/` whose filename or content contains keywords like "guideline", "convention", "style", or "contributing"
+
+**Internalize these conventions before writing any assertions or implementation code.** All code you write must follow the project's conventions, coding style, and development guidelines as described in those files.
 
 ### Step 2: Verify test coverage
 

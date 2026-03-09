@@ -1,6 +1,6 @@
 ---
 name: gti-test
-description: "Phase 2 of the gti workflow. Reads a Gherkin .feature file and generates empty test case shells. Requires human confirmation before proceeding to implementation."
+description: "Phase 2 of the gti workflow. Reads a Gherkin .feature file from docs/<feature_name>/ and generates empty test case shells. Human confirmation is handled in gti-spec; this phase proceeds directly to implementation."
 ---
 
 # gti-test: Gherkin → Empty Test Shells
@@ -30,7 +30,7 @@ Do create test shells for predictable failure paths that callers must handle:
 - Business rule violation a caller must recover from
 
 **Quantity does not equal quality.**
-One scenario = one test shell. Do not split a single scenario into multiple shells or add extra shells "for coverage." If a Gherkin scenario is too broad (covers multiple behaviors), flag it to the user during the confirmation step instead of multiplying shells.
+One scenario = one test shell. Do not split a single scenario into multiple shells or add extra shells "for coverage." If a Gherkin scenario is too broad (covers multiple behaviors), flag it to the user instead of multiplying shells.
 
 ## Process
 
@@ -50,9 +50,18 @@ Scan the project root for framework indicators in this order:
 
 If none found, ask the user: "What test framework does this project use?"
 
+### Step 1.5: Read context
+
+Read the following files to understand the feature's requirements and scenarios:
+
+- `docs/<feature_name>/spec.md` — requirements context for the feature
+- `docs/<feature_name>/<feature_name>.feature` — Gherkin scenarios to translate into test shells
+
+Note: feature files live under `docs/<feature_name>/`, not `features/`.
+
 ### Step 2: Map Gherkin scenarios to test shells
 
-Read `features/<name>.feature`. For each `Scenario`, create one empty test function.
+Read `docs/<feature_name>/<feature_name>.feature`. For each `Scenario`, create one empty test function.
 
 Rules:
 - Function name = scenario name in snake_case or camelCase (match project convention)
@@ -63,7 +72,7 @@ Rules:
 
 Example mapping (TypeScript/Vitest):
 ```typescript
-// Given: features/login.feature
+// Given: docs/login/login.feature
 
 describe("User login", () => {
   it("successful login with valid credentials", () => {
@@ -126,21 +135,8 @@ Use the language-appropriate naming convention and placement. Follow the project
 - Mirror source structure under `spec/`: `spec/services/login_spec.rb`
 - Use `describe` for the class/module, `context` for scenarios
 
-### Step 4: HARD STOP — Human confirmation required
+### Step 4: Hand off
 
-Present the generated test file to the user and say:
+After writing the test file, announce: "Test shells generated. Moving to implementation."
 
-"Test shells written to `<path>`. Please review:
-- Are all scenarios represented? (Gherkin: N scenarios, Test shells: N shells)
-- Are any scenarios missing or should be split?
-- Do the test names clearly describe the expected behavior?
-
-Reply 'ok' or 'approved' to continue, or provide feedback."
-
-Wait for explicit approval. Do NOT proceed until confirmed.
-
-### Step 5: Hand off
-
-After confirmation, announce: "Test shells confirmed. Moving to implementation."
-
-Then invoke the `gti-impl` skill.
+Then invoke the `gti-impl` skill directly.
