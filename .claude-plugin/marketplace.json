@@ -14,7 +14,8 @@
         "name": "James Hsueh",
         "email": "asdfg55887@gmail.com"
       },
-      "keywords": ["bdd", "tdd", "sdd", "gherkin", "cycle", "workflow", "testing"]
+      "keywords": ["bdd", "tdd", "sdd", "gherkin", "cycle", "workflow", "testing"],
+      "source": "https://github.com/CodeMachine0121/gti-agent-cycle-skill.git"
     }
   ]
 }
