@@ -23,7 +23,7 @@ You describe a feature. `gti` guides you through the entire development cycle:
    - Enforces **James Refactor Principles**: zero private methods, method ≤ 5 responsibilities, pure domain/service layer, fluent business logic, immutable variables
    - Test helpers follow naming conventions: `Given`-prefix for mock stubs, `Create`-prefix for object construction
 
-4. **Final verification** (`gti-verify`) — three gates must all pass before completion:
+4. **Final verification** (`gti-verify`) — requires the **Playwright MCP** to be configured (see [Installation](#installation)). Three gates must all pass before completion:
    - **Coverage cross-check**: each Gherkin scenario maps to a test with real assertions
    - **Full test suite**: every unit test passes
    - **E2E via Playwright MCP**: each scenario is validated in the running application
@@ -40,6 +40,12 @@ Install from GitHub in Claude Code (two steps):
 ```
 /plugin marketplace add https://github.com/CodeMachine0121/gti-agent-cycle-skill
 /plugin install gti@CodeMachine0121-gti-agent-cycle-skill
+```
+
+Then configure the Playwright MCP — required for `gti-verify` (Phase 4):
+
+```bash
+claude mcp add --config mcps/playwright-mcp.json
 ```
 
 ## Usage
@@ -72,12 +78,6 @@ docs/<feature-name>/
   <feature-name>.feature   # Gherkin scenarios (business language)
   spec.md                  # Requirements summary + happy cases
   conclusion.md            # Generated after all three verification gates pass
-```
-
-A `playwright-mcp.json` is provided in the `mcps/` folder for configuring the Playwright MCP server:
-
-```bash
-claude mcp add --config mcps/playwright-mcp.json
 ```
 
 ## Implementation Style
