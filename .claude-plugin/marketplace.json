@@ -1,6 +1,7 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "gti-agent-cycle-skill",
-  "description": "A Claude Code plugin marketplace for the GTI (Gherkin → Test → Implementation) workflow",
+  "description": "A Claude Code plugin marketplace for the GTI (Gherkin → Test → Implementation) BDD→TDD development workflow",
   "owner": {
     "name": "James Hsueh",
     "email": "asdfg55887@gmail.com"
@@ -10,11 +11,17 @@
       "name": "gti",
       "description": "A Claude Code plugin that enforces a closed-loop BDD→TDD development workflow — from natural language requirement to verified, passing tests — with full documentation output at every stage.",
       "version": "1.0.1",
-      "source": "https://github.com/CodeMachine0121/gti-agent-cycle-skill.git",
       "author": {
         "name": "James Hsueh",
         "email": "asdfg55887@gmail.com"
-      }
+      },
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/CodeMachine0121/gti-agent-cycle-skill.git"
+      },
+      "homepage": "https://github.com/CodeMachine0121/gti-agent-cycle-skill",
+      "keywords": ["bdd", "tdd", "gherkin", "cycle", "workflow", "testing"]
     }
   ]
 }
