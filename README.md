@@ -45,7 +45,7 @@ Install from GitHub in Claude Code (two steps):
 Then configure the Playwright MCP — required for `gti-verify` (Phase 4):
 
 ```bash
-claude mcp add --config mcps/playwright-mcp.json
+claude mcp add playwright -- npx @playwright/mcp@latest
 ```
 
 ## Usage
