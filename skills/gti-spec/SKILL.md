@@ -11,21 +11,61 @@ You are a Business Analyst. Your job is first to set up an isolated development 
 
 ## Process
 
-### Step 0: Git worktree setup
+### Step 0: Environment setup
 
 Ask the user for the feature name if it has not already been provided. The feature name should be expressed as a short, descriptive phrase; you will convert it to kebab-case for use as the branch name and directory name.
 
-Once you have the feature name:
+Once you have the feature name, ask:
 
-1. Derive `<feature-name>` as the kebab-case version (e.g. "user login" → `user-login`).
-2. Run the following command using raw git (do not invoke any external skill):
-   ```
-   git worktree add ../worktrees/<feature-name> -b <feature-name>
-   ```
-3. Announce the worktree location to the user:
-   "Worktree created at `../worktrees/<feature-name>` on branch `<feature-name>`. All development will happen in that directory."
+**Question A — Worktree:**
+"How would you like to set up the working environment?
+1. Create a new git worktree (isolated copy of the repo)
+2. Use an existing worktree (provide the path)
+3. Work directly in the main project (no worktree)"
 
-Do not proceed until the worktree has been created successfully.
+Handle each option:
+
+- **Option 1 — New worktree:**
+  1. Derive `<feature-name>` as the kebab-case version (e.g. "user login" → `user-login`).
+  2. Run using raw git (do not invoke any external skill):
+     ```
+     git worktree add ../worktrees/<feature-name>
+     ```
+  3. Set `<working-dir>` = `../worktrees/<feature-name>`.
+  4. Announce: "Worktree created at `../worktrees/<feature-name>`. All development will happen in that directory."
+
+- **Option 2 — Existing worktree:**
+  1. Record the user-provided path as `<working-dir>`.
+  2. Announce: "Using existing worktree at `<working-dir>`. All development will happen in that directory."
+
+- **Option 3 — Main project:**
+  1. Set `<working-dir>` = the current project root.
+  2. Announce: "Working directly in the main project. No worktree will be created."
+
+Do not proceed until the working directory is confirmed.
+
+**Question B — Branch:**
+Ask: "Would you like to create a new branch for this feature?
+- Yes (specify source branch, e.g. `main`): a new branch `<feature-name>` will be created from it
+- No: continue on the current branch"
+
+Handle each answer:
+
+- **Yes — with source branch:**
+  Run using raw git:
+  ```
+  git -C <working-dir> checkout -b <feature-name> <source-branch>
+  ```
+  Announce: "Created branch `<feature-name>` from `<source-branch>`."
+
+- **No:**
+  Do not create a branch. Announce the current branch name:
+  ```
+  git -C <working-dir> rev-parse --abbrev-ref HEAD
+  ```
+  "Continuing on branch `<current-branch>`."
+
+Do not proceed until the branch situation is confirmed.
 
 ### Step 1: Understand the happy path
 
@@ -86,7 +126,7 @@ When the user confirms the list is complete, proceed to write the files.
 
 ### Step 4: Write the spec files
 
-Create the directory `docs/<feature_name>/` inside the worktree if it does not already exist (using `<feature_name>` as the kebab-case feature name). Write two files into that directory:
+Create the directory `docs/<feature_name>/` inside `<working-dir>` if it does not already exist (using `<feature_name>` as the kebab-case feature name). Write two files into that directory:
 
 **File 1: `docs/<feature_name>/<feature_name>.feature`**
 
