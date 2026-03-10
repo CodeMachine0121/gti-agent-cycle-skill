@@ -121,7 +121,7 @@ A spec document with the following structure:
 ```
 # Feature: <name>
 
-## 需求摘要
+## Summary
 [concise summary of what this feature does and why]
 
 ## Happy Cases
@@ -135,7 +135,7 @@ Read both written files and verify:
 - [ ] No implementation details leaked into steps
 - [ ] All confirmed scenarios from Step 3 are represented
 - [ ] No Runtime Exception scenarios slipped in
-- [ ] The `spec.md` 需求摘要 accurately summarizes the feature intent
+- [ ] The `spec.md` Summary accurately summarizes the feature intent
 - [ ] The `spec.md` Happy Cases list matches the happy path scenarios in the feature file
 
 ### Step 6: Human confirmation

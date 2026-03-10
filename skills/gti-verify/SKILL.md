@@ -1,51 +1,28 @@
 ---
 name: gti-verify
-description: "Phase 4 of the gti workflow. Final verification gate — runs full test suite, verifies all tests are implemented and green, cross-checks coverage against feature scenarios, and generates a conclusion document."
+description: "Phase 4 of the gti workflow. Final verification gate — cross-checks unit tests against feature scenarios, runs full test suite, then performs e2e validation via Playwright MCP, and generates a conclusion document."
 ---
 
 # gti-verify: Final Verification Gate
 
 ## Role
 
-You are a Final QA Verifier. Your job is to run the complete test suite, verify all tests are green and fully implemented (not empty shells), cross-check unit test coverage against the feature file scenarios, and produce a conclusion document.
+You are a Final QA Verifier. Your job is to:
+1. Cross-check unit test coverage against the feature file scenarios
+2. Run the full test suite and verify all green
+3. Start the project and run e2e tests via Playwright MCP
+4. Produce a conclusion document
 
 ## Process
 
-### Step 1: Detect test command
-
-Detect the test framework and command from project files:
-
-| Project file | Command |
-|---|---|
-| `package.json` + vitest | `npx vitest run` |
-| `package.json` + jest | `npx jest` |
-| `pom.xml` | `mvn test` |
-| `build.gradle` | `./gradlew test` |
-| `go.mod` | `go test ./...` |
-| `pyproject.toml` / `pytest.ini` | `pytest` |
-| `Cargo.toml` | `cargo test` |
-
-### Step 2: Verify all tests pass
-
-Run the full test suite. If any test fails:
-- List each failing test with name, file, line, actual vs expected
-- Report: "Verification failed. Return to implementation to fix failures."
-- Do NOT proceed to Step 3.
-
-### Step 3: Verify tests are implemented (not empty shells)
-
-Scan each test file for the feature. Check that no test function contains only `// TODO` or is otherwise empty/unimplemented.
-- If empty shells are found, list them and report: "The following tests have no assertions — implementation is incomplete."
-- Do NOT proceed to Step 4 until resolved.
-
-### Step 4: Cross-check test coverage against feature file
+### Step 1: Cross-check test coverage against feature file
 
 Read `docs/<feature_name>/<feature_name>.feature` and count all `Scenario:` blocks.
 Read the test file(s) for this feature and count test functions.
 
 For each scenario in the feature file, verify there is a corresponding test that:
 - Has a meaningful name matching the scenario
-- Has actual assertions
+- Has actual assertions (not `// TODO` or empty shells)
 
 Report:
 ```
@@ -61,28 +38,66 @@ Missing coverage (if any):
   ✗ [scenario] — no corresponding test found
 ```
 
-If any scenarios are unmapped, report as incomplete and do not proceed.
+If any scenarios are unmapped or tests are empty shells, report as incomplete and do NOT proceed.
 
-### Step 5: Generate conclusion document
+### Step 2: Detect test command and run unit tests
+
+Detect the test framework and command from project files:
+
+| Project file | Command |
+|---|---|
+| `package.json` + vitest | `npx vitest run` |
+| `package.json` + jest | `npx jest` |
+| `pom.xml` | `mvn test` |
+| `build.gradle` | `./gradlew test` |
+| `go.mod` | `go test ./...` |
+| `pyproject.toml` / `pytest.ini` | `pytest` |
+| `Cargo.toml` | `cargo test` |
+
+Run the full test suite. If any test fails:
+- List each failing test with name, file, line, actual vs expected
+- Report: "Verification failed. Return to implementation to fix failures."
+- Do NOT proceed to Step 3.
+
+### Step 3: E2E testing via Playwright MCP
+
+Start the project (detect from `package.json` scripts: `dev`, `start`, or equivalent), then use Playwright MCP to execute e2e validation for each feature scenario.
+
+For each `Scenario:` in the feature file:
+- Navigate to the relevant page/route
+- Perform the actions described in the scenario steps (`Given` / `When` / `Then`)
+- Assert the expected outcomes using Playwright assertions
+
+If any e2e scenario fails:
+- Report the scenario name, step that failed, and actual vs expected state
+- Report: "E2E verification failed. Return to implementation."
+- Do NOT proceed to Step 4.
+
+### Step 4: Generate conclusion document
 
 If all checks pass, create `docs/<feature_name>/conclusion.md` with this structure:
 
 ```markdown
 # Conclusion: <feature_name>
 
-## 實作摘要
+## Implementation Summary
 [Brief description of what was implemented]
 
-## 測試涵蓋情境
-[List each feature scenario and its corresponding test case]
+## Unit Test Coverage
+[List each feature scenario and its corresponding unit test case]
 
-## 驗證結果
-- Total tests: N
-- All passing: ✓
+## E2E Validation Results
+[List each feature scenario and the Playwright e2e validation result]
+
+## Verification Results
+- Total unit tests: N
+- All unit tests passing: ✓
+- E2E scenarios: N
+- All e2e passing: ✓
 - Coverage: All N scenarios covered
 - Implementation: Complete (no empty shells)
 
-## 完成時間
+## Completed At
 [Current date]
 ```
 

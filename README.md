@@ -11,7 +11,7 @@ You describe a feature. `gti` guides you through the entire development cycle:
 1. **Setup + Spec** — creates an isolated git worktree, brainstorms edge cases and failure paths with you, then writes a Gherkin `.feature` file and a `spec.md` document. **You review and confirm the spec before anything else proceeds.**
 2. **Generate test shells** — empty test cases mapped from each scenario, generated automatically after spec approval
 3. **Implement** — follows your project's conventions (CLAUDE.md, AGENT.md, coding style), fills all assertions first (every test RED), then implements source code to make them all GREEN — no test case is ever skipped
-4. **Final verification** — runs the full test suite, checks no empty shells remain, cross-checks test coverage against all feature scenarios, and produces a `conclusion.md` document
+4. **Final verification** — cross-checks feature scenarios against unit tests, runs the full test suite, then launches the project and runs e2e tests via Playwright MCP — produces a `conclusion.md` document only when all three gates pass
 
 ```
 /gti → gti-spec → [human review] → gti-test → gti-impl → gti-verify
@@ -42,7 +42,7 @@ Claude will ask for your feature requirement and walk through the full workflow 
 | `gti-spec` | Setup worktree, brainstorm requirements → write `.feature` + `spec.md`, wait for human approval | `gti-test` |
 | `gti-test` | Generate empty test shells from feature file | `gti-impl` |
 | `gti-impl` | Follow project conventions, fill all assertions → implement source code | `gti-verify` |
-| `gti-verify` | Run full suite, verify coverage, generate `conclusion.md` | — |
+| `gti-verify` | Cross-check scenarios vs unit tests → run full suite → e2e via Playwright MCP → generate `conclusion.md` | — |
 
 ## Output Structure
 
@@ -52,7 +52,13 @@ Each feature produces a documentation folder at `docs/<feature-name>/`:
 docs/<feature-name>/
   <feature-name>.feature   # Gherkin scenarios (business language)
   spec.md                  # Requirements summary + happy cases
-  conclusion.md            # Generated after successful verification
+  conclusion.md            # Generated after all verification gates pass
+```
+
+A `playwright-mcp.json` is provided in the `mcps/` folder for configuring the Playwright MCP server:
+
+```bash
+claude mcp add --config mcps/playwright-mcp.json
 ```
 
 ## Testing Principles
