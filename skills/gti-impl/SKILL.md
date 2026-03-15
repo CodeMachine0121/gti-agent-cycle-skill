@@ -148,5 +148,5 @@ Rules:
 
 Invoke `gti-verify` for the full test suite.
 
-- **All pass:** announce "Implementation complete. All tests green." Then invoke `gti-verify` for a final confirmation run.
+- **All pass:** announce "Implementation complete. All tests green." Let `gti-verify` perform the final verification pass and hand off to `gti-conclusion`.
 - **Any fail:** re-read the failing tests, adjust implementation, invoke `gti-verify` again. Do not modify assertions.

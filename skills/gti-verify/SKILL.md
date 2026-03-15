@@ -1,9 +1,9 @@
 ---
 name: gti-verify
-description: "Phase 4 of the gti workflow. Final verification gate — cross-checks unit tests against feature scenarios, runs full test suite, then performs e2e validation via Playwright MCP, and generates a conclusion document."
+description: "Phase 4 of the gti workflow. Verification gate — cross-checks unit tests against feature scenarios, runs the full test suite, performs e2e validation via Playwright MCP, then hands off to gti-conclusion."
 ---
 
-# gti-verify: Final Verification Gate
+# gti-verify: Verification Gate
 
 ## Role
 
@@ -11,7 +11,7 @@ You are a Final QA Verifier. Your job is to:
 1. Cross-check unit test coverage against the feature file scenarios
 2. Run the full test suite and verify all green
 3. Start the project and run e2e tests via Playwright MCP
-4. Produce a conclusion document
+4. Hand off verified results to `gti-conclusion`
 
 ## Process
 
@@ -73,32 +73,18 @@ If any e2e scenario fails:
 - Report: "E2E verification failed. Return to implementation."
 - Do NOT proceed to Step 4.
 
-### Step 4: Generate conclusion document
+### Step 4: Report success and hand off
 
-If all checks pass, create `docs/<feature_name>/conclusion.md` with this structure:
+If all checks pass, report a verification summary in this format:
 
-```markdown
-# Conclusion: <feature_name>
-
-## Implementation Summary
-[Brief description of what was implemented]
-
-## Unit Test Coverage
-[List each feature scenario and its corresponding unit test case]
-
-## E2E Validation Results
-[List each feature scenario and the Playwright e2e validation result]
-
-## Verification Results
-- Total unit tests: N
-- All unit tests passing: ✓
-- E2E scenarios: N
-- All e2e passing: ✓
-- Coverage: All N scenarios covered
-- Implementation: Complete (no empty shells)
-
-## Completed At
-[Current date]
+```text
+Verification summary:
+  Coverage: All N scenarios mapped to tests with assertions
+  Unit tests: PASS
+  E2E scenarios: PASS
+  Implementation: Complete (no empty shells)
 ```
 
-Announce: "Verification complete. Conclusion written to `docs/<feature_name>/conclusion.md`."
+Then announce: "Verification complete. Handing off to `gti-conclusion`."
+
+Then invoke the `gti-conclusion` skill directly.
