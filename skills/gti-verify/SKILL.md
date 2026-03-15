@@ -1,6 +1,6 @@
 ---
 name: gti-verify
-description: "Phase 4 of the gti workflow. Verification gate — cross-checks unit tests against feature scenarios, runs the full test suite, performs e2e validation via Playwright MCP, then hands off to gti-conclusion."
+description: "Phase 4 of the gti workflow. Verification gate — cross-checks unit tests against feature scenarios, runs the full test suite, performs e2e validation via Playwright MCP, then routes to gti-debug on failure or gti-conclusion on success."
 ---
 
 # gti-verify: Verification Gate
@@ -11,7 +11,8 @@ You are a Final QA Verifier. Your job is to:
 1. Cross-check unit test coverage against the feature file scenarios
 2. Run the full test suite and verify all green
 3. Start the project and run e2e tests via Playwright MCP
-4. Hand off verified results to `gti-conclusion`
+4. Hand off failed verification to `gti-debug`
+5. Hand off successful verification to `gti-conclusion`
 
 ## Process
 
@@ -40,6 +41,21 @@ Missing coverage (if any):
 
 If any scenarios are unmapped or tests are empty shells, report as incomplete and do NOT proceed.
 
+On failure, report in this format:
+
+```text
+Verification failed:
+  Category: Coverage
+  Reason: Missing scenario mapping or empty test shells
+
+Items to fix:
+  - [scenario or test name] — [problem]
+```
+
+Then announce: "Coverage verification failed. Handing off to `gti-debug`."
+
+Then invoke the `gti-debug` skill directly.
+
 ### Step 2: Detect test command and run unit tests
 
 Detect the test framework and command from project files:
@@ -56,7 +72,19 @@ Detect the test framework and command from project files:
 
 Run the full test suite. If any test fails:
 - List each failing test with name, file, line, actual vs expected
-- Report: "Verification failed. Return to implementation to fix failures."
+- Report in this format:
+
+```text
+Verification failed:
+  Category: Unit tests
+  Reason: One or more unit tests failed
+
+Items to fix:
+  - [test name] — [file:line] — expected [expected], got [actual]
+```
+
+- Announce: "Unit test verification failed. Handing off to `gti-debug`."
+- Invoke the `gti-debug` skill directly.
 - Do NOT proceed to Step 3.
 
 ### Step 3: E2E testing via Playwright MCP
@@ -70,7 +98,19 @@ For each `Scenario:` in the feature file:
 
 If any e2e scenario fails:
 - Report the scenario name, step that failed, and actual vs expected state
-- Report: "E2E verification failed. Return to implementation."
+- Report in this format:
+
+```text
+Verification failed:
+  Category: E2E
+  Reason: One or more end-to-end scenarios failed
+
+Items to fix:
+  - [scenario name] — [step] — expected [expected], got [actual]
+```
+
+- Announce: "E2E verification failed. Handing off to `gti-debug`."
+- Invoke the `gti-debug` skill directly.
 - Do NOT proceed to Step 4.
 
 ### Step 4: Report success and hand off

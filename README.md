@@ -27,13 +27,19 @@ You describe a feature. `gti` guides you through the entire development cycle:
     - **Coverage cross-check**: each Gherkin scenario maps to a test with real assertions
     - **Full test suite**: every unit test passes
     - **E2E via Playwright MCP**: each scenario is validated in the running application
+   - On failure, `gti-verify` hands off to `gti-debug`
 
-5. **Conclusion** (`gti-conclusion`) — runs only after verification succeeds:
+5. **Debug** (`gti-debug`) — runs only when verification fails:
+   - Consumes the verification failure report
+   - Fixes implementation, coverage gaps, or test/e2e infrastructure issues
+   - Hands the feature back to `gti-verify`
+
+6. **Conclusion** (`gti-conclusion`) — runs only after verification succeeds:
    - Writes `docs/<feature-name>/conclusion.md`
    - Summarizes implementation, unit-test coverage, e2e validation, and final verification status
 
 ```
-/gti → gti-spec → [human review] → gti-test → gti-impl → gti-verify → gti-conclusion
+/gti → gti-spec → [human review] → gti-test → gti-impl → gti-verify ⇄ gti-debug → gti-conclusion
 ```
 
 ## Installation
@@ -68,7 +74,8 @@ Claude will ask for your feature requirement and walk through the full workflow 
 | `gti-spec` | Set up worktree + branch, brainstorm requirements → write `.feature` + `spec.md`, wait for human approval | `gti-test` |
 | `gti-test` | Detect test framework, generate empty test shells from feature file | `gti-impl` |
 | `gti-impl` | Follow project conventions, fill all assertions (RED) → implement source code (GREEN) | `gti-verify` |
-| `gti-verify` | Cross-check coverage → run full suite → e2e via Playwright MCP → report verification result | `gti-conclusion` |
+| `gti-verify` | Cross-check coverage → run full suite → e2e via Playwright MCP → route failure/success | `gti-debug` or `gti-conclusion` |
+| `gti-debug` | Fix failed verification results and hand back for re-verification | `gti-verify` |
 | `gti-conclusion` | Write `conclusion.md` from successful verification results | — |
 
 Each skill is independently invocable if you need to re-run a single phase.

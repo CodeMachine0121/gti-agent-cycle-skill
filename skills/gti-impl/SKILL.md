@@ -144,9 +144,12 @@ Rules:
 - No `private` or `private static` methods — extract to collaborators or inline
 - Business logic must be fluent and pure; no framework dependencies in domain/service layers
 
-### Step 6: Verify and hand off
+### Step 6: Enter the verification loop
 
 Invoke `gti-verify` for the full test suite.
 
-- **All pass:** announce "Implementation complete. All tests green." Let `gti-verify` perform the final verification pass and hand off to `gti-conclusion`.
-- **Any fail:** re-read the failing tests, adjust implementation, invoke `gti-verify` again. Do not modify assertions.
+- `gti-verify` is the gatekeeper from this point:
+  - **Verification passes:** `gti-verify` hands off to `gti-conclusion`
+  - **Verification fails:** `gti-verify` hands off to `gti-debug`, which fixes the issue and returns to `gti-verify`
+
+Announce: "Implementation complete. Entering the verify/debug loop."

@@ -1,6 +1,6 @@
 ---
 name: gti-conclusion
-description: "Phase 5 of the gti workflow. Consumes successful verification results and writes docs/<feature_name>/conclusion.md."
+description: "Phase 6 of the gti workflow. Consumes successful verification results and writes docs/<feature_name>/conclusion.md."
 ---
 
 # gti-conclusion: Conclusion Writer
