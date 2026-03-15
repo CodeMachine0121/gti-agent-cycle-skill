@@ -10,7 +10,7 @@
     {
       "name": "gti",
       "description": "A Claude Code plugin that enforces a closed-loop BDD→TDD development workflow — from natural language requirement to verified, passing tests — with full documentation output at every stage.",
-      "version": "1.0.1",
+      "version": "1.1.2",
       "author": {
         "name": "James Hsueh",
         "email": "asdfg55887@gmail.com"
